@@ -21,13 +21,13 @@ class AIPanel(Static):
         height: 100%;
         width: 100%;
         background: $surface;
-        border: solid $text-disabled; /* Grey border by default */
+        border: solid $secondary; /* Use $secondary for grey/dimmed look */
         layout: vertical;
     }
     
     /* When focused (input focused), change border to white/bright */
     AIPanel:focus-within {
-        border: solid $text;
+        border: solid $primary; /* Use $primary for focused state */
     }
     
     .header {
@@ -48,7 +48,7 @@ class AIPanel(Static):
     
     RichLog {
         height: 1fr;
-        border: top $text-disabled; /* Only top border to separate from input */
+        border: top $secondary; /* Only top border to separate from input */
         overflow-y: scroll;
         background: $surface-darken-1;
     }

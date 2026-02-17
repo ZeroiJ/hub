@@ -17,12 +17,12 @@ class GitPanel(Static):
     GitPanel {
         height: 100%;
         background: $surface;
-        border: solid $text-disabled; /* Grey border by default */
+        border: solid $secondary; /* Use $secondary for grey/dimmed look */
     }
     
     /* When focused, change border to white (or bright primary) */
     GitPanel:focus {
-        border: solid $text;
+        border: solid $primary; /* Use $primary for focused state */
     }
     
     .header {
