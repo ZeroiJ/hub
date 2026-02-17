@@ -6,7 +6,7 @@ from textual.containers import Container, Horizontal
 from textual.widgets import Label
 
 from hub.panels.git_panel import GitPanel
-from hub.panels.ai_panel import AIPanel
+from hub.panels.terminal_panel import TerminalPanel
 
 
 class HubApp(App):
@@ -37,9 +37,9 @@ class HubApp(App):
 
     def compose(self) -> ComposeResult:
         with Horizontal():
-            # Use GitPanel in the left panel and AIPanel in the right
+            # Use GitPanel in the left panel and TerminalPanel in the right
             yield Container(GitPanel(Path(os.getcwd()), id="git-view"), id="left-panel")
-            yield Container(AIPanel(id="ai-view"), id="right-panel")
+            yield Container(TerminalPanel(id="terminal-view"), id="right-panel")
 
     def on_mount(self) -> None:
         self.query_one("#git-view").focus()
@@ -48,9 +48,9 @@ class HubApp(App):
         self.query_one("#git-view").focus()
 
     def action_focus_right(self) -> None:
-        # Focus the input inside the AI panel
-        ai_panel = self.query_one(AIPanel)
-        ai_panel.query_one("Input").focus()
+        # Focus the input inside the Terminal panel
+        terminal_panel = self.query_one(TerminalPanel)
+        terminal_panel.query_one("Input").focus()
 
     def action_toggle_git_folder(self) -> None:
         try:
