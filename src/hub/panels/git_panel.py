@@ -55,6 +55,7 @@ class GitPanel(Static):
         super().__init__(**kwargs)
         self.repo_path = repo_path
         self.repo: Optional[Repo] = None
+        self.can_focus = True
         try:
             self.repo = Repo(str(repo_path))
         except InvalidGitRepositoryError:

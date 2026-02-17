@@ -172,8 +172,10 @@ class ShellPanel(Static):
         if self._master_fd is None:
             return
 
-        # Stop propagation so other widgets don't handle this key
+        # IMPORTANT: Stop propagation so other widgets don't handle this key
+        # This prevents global bindings from firing while typing in shell
         event.stop()
+        event.prevent_default()
 
         char = event.character
         key = event.key
