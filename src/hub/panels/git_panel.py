@@ -11,16 +11,18 @@ from textual.widgets import Static, Label, ListItem, ListView
 class GitPanel(Static):
     """
     A panel that displays Git status or a folder browser.
-
-    Attributes:
-        repo_path (Path): The path to the git repository.
-        mode (str): Current mode, either "git" or "folder".
     """
 
     DEFAULT_CSS = """
     GitPanel {
         height: 100%;
         background: $surface;
+        border: solid $text-disabled; /* Grey border by default */
+    }
+    
+    /* When focused, change border to white (or bright primary) */
+    GitPanel:focus {
+        border: solid $text;
     }
     
     .header {

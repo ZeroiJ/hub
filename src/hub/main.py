@@ -15,18 +15,14 @@ class HubApp(App):
         height: 100%;
     }
     
-    /* Default panel styling */
+    #left-panel { width: 30%; height: 100%; }
+    #right-panel { width: 70%; height: 100%; }
+    
+    /* Remove borders from the container wrappers so we only have one border per panel */
     #left-panel, #right-panel {
-        height: 100%;
-        border: solid $accent;
-    }
-
-    #left-panel { width: 30%; }
-    #right-panel { width: 70%; }
-
-    /* Focus styling */
-    GitPanel:focus, AIPanel:focus-within {
-        border: double $primary;
+        border: none;
+        padding: 0;
+        margin: 0;
     }
     """
 
