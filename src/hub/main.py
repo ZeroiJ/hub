@@ -6,6 +6,7 @@ from textual.containers import Container, Horizontal
 from textual.widgets import Label
 
 from hub.panels.git_panel import GitPanel
+from hub.panels.shell_panel import ShellPanel
 
 
 class HubApp(App):
@@ -39,7 +40,7 @@ class HubApp(App):
             # Use GitPanel in the left panel
             yield Container(GitPanel(Path(os.getcwd())), id="left-panel")
             yield Container(Label("Middle Panel (40%)"), id="middle-panel")
-            yield Container(Label("Right Panel (35%)"), id="right-panel")
+            yield Container(ShellPanel(), id="right-panel")
 
     def action_toggle_git_folder(self) -> None:
         git_panel = self.query_one(GitPanel)
