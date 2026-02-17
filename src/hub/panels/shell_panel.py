@@ -36,8 +36,10 @@ class ShellPanel(Static):
     }
     """
 
+    # Extended key mapping for better shell experience
     KEY_MAPPING: Dict[str, bytes] = {
         "enter": b"\r",
+        "return": b"\r",
         "tab": b"\t",
         "backspace": b"\x7f",
         "space": b" ",
@@ -51,6 +53,17 @@ class ShellPanel(Static):
         "pagedown": b"\x1b[6~",
         "delete": b"\x1b[3~",
         "escape": b"\x1b",
+        "ctrl+c": b"\x03",
+        "ctrl+d": b"\x04",
+        "ctrl+z": b"\x1a",
+        "ctrl+l": b"\x0c",
+        "ctrl+a": b"\x01",
+        "ctrl+e": b"\x05",
+        "ctrl+r": b"\x12",
+        "ctrl+t": b"\x14",
+        "ctrl+w": b"\x17",
+        "ctrl+k": b"\x0b",
+        "ctrl+u": b"\x15",
     }
 
     class OutputReady(Message):
@@ -92,7 +105,6 @@ class ShellPanel(Static):
 
         if self._pid == 0:  # Child process
             # Set terminal size
-            # struct.pack('HHHH', rows, cols, x_pixels, y_pixels)
             winsize = struct.pack("HHHH", rows, cols, 0, 0)
 
             # Execute the shell
@@ -180,12 +192,17 @@ class ShellPanel(Static):
         char = event.character
         key = event.key
 
+        # Debugging: Log key events if needed (optional)
+        # self.log(f"Key: {key}, Char: {char!r}")
+
         data = b""
 
         if key in self.KEY_MAPPING:
             data = self.KEY_MAPPING[key]
         elif char:
-            data = char.encode("utf-8")
+            # Check for control characters that Textual might pass as chars
+            if len(char) == 1:
+                data = char.encode("utf-8")
 
         if data:
             try:
