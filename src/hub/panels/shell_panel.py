@@ -53,18 +53,12 @@ class ShellPanel(Static):
         "pagedown": b"\x1b[6~",
         "delete": b"\x1b[3~",
         "escape": b"\x1b",
-        "ctrl+c": b"\x03",
-        "ctrl+d": b"\x04",
-        "ctrl+z": b"\x1a",
-        "ctrl+l": b"\x0c",
-        "ctrl+a": b"\x01",
-        "ctrl+e": b"\x05",
-        "ctrl+r": b"\x12",
-        "ctrl+t": b"\x14",
-        "ctrl+w": b"\x17",
-        "ctrl+k": b"\x0b",
-        "ctrl+u": b"\x15",
     }
+
+    # Add control keys programmatically to avoid huge dict
+    for char_code in range(1, 27):
+        char = chr(char_code + 96)  # a-z
+        KEY_MAPPING[f"ctrl+{char}"] = bytes([char_code])
 
     class OutputReady(Message):
         """Emitted when there is new output from the shell."""
@@ -73,7 +67,6 @@ class ShellPanel(Static):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        # Use internal variables to avoid conflicts with Textual properties
         self._master_fd: Optional[int] = None
         self._pid: Optional[int] = None
         self._emulator: Optional[pyte.Screen] = None
@@ -106,6 +99,7 @@ class ShellPanel(Static):
         if self._pid == 0:  # Child process
             # Set terminal size
             winsize = struct.pack("HHHH", rows, cols, 0, 0)
+            # fcntl.ioctl(0, termios.TIOCSWINSZ, winsize) # stdin is 0
 
             # Execute the shell
             env = os.environ.copy()
@@ -185,24 +179,22 @@ class ShellPanel(Static):
             return
 
         # IMPORTANT: Stop propagation so other widgets don't handle this key
-        # This prevents global bindings from firing while typing in shell
         event.stop()
         event.prevent_default()
 
         char = event.character
         key = event.key
 
-        # Debugging: Log key events if needed (optional)
-        # self.log(f"Key: {key}, Char: {char!r}")
-
         data = b""
 
         if key in self.KEY_MAPPING:
             data = self.KEY_MAPPING[key]
         elif char:
-            # Check for control characters that Textual might pass as chars
-            if len(char) == 1:
-                data = char.encode("utf-8")
+            data = char.encode("utf-8")
+        elif (
+            key.isprintable()
+        ):  # Fallback for keys that Textual might not treat as char
+            data = key.encode("utf-8")
 
         if data:
             try:
